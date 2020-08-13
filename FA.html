@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<head>
+    <title>MA</title>
+    <style>
+
+        .board {
+            display: none;
+        }
+
+        .win {
+            display: none;
+        }
+        
+        .picture {
+            height: 400px;
+            width: 200px;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="choose-level">
+        <h3>Choose Level</h3>
+        <button onclick="setLevel(1)">level 1</button>
+        <button onclick="setLevel(2)">level 2</button>
+        <button onclick="setLevel(3)">level 3</button>
+    </div>
+    <div class="board">
+
+    </div>
+
+    <div class="win">
+        <h3>You win</h3>
+        <button onclick="replay()">Replay</button>
+    </div>
+    <script type="text/javascript">
+        let level = 0;
+        let board;
+        let chooseLevel;
+        let lastClickedNum = 0;
+        let lastClickedCardQuery = null;
+        let totalRevealed = 0;
+        let win;
+        window.onload = function(){
+            board = document.querySelector(".board")  
+            chooseLevel = document.querySelector(".choose-level")  
+            win = document.querySelector(".win")
+        }
+
+        function setLevel(i) {
+            level = i;
+            board.style.display = "block"
+            chooseLevel.style.display = "none"
+            for (let i = 0; i < level + 2; i++){
+                board.innerHTML += `<button onclick="clickedPicture(${i}, 'a')" class="picture a${i}"> <img src="back.png" alt="back.png"> </div>`
+                board.innerHTML += `<button onclick="clickedPicture(${i}, 'b')" class="picture b${i}"> <img src="back.png" alt="back.png"> </div>`
+            }
+        }
+
+        function clickedPicture(pictureNum, version){
+            let query = "." + version + pictureNum;
+            if (lastClickedNum === pictureNum ){
+                //animate
+                document.querySelector(query + " img").src = pictureNum + ".png";
+                document.querySelector(query).disabled = true
+
+                lastClickedNum = 0;
+                lastClickedCardQuery = null;
+                totalRevealed++
+
+                if (totalRevealed === level + 3){
+                    totalRevealed = 0;
+                    board.style.display = "none"
+                    win.style.display = "block"
+                }
+            } else if (lastClickedNum === 0){
+                //animate
+                document.querySelector(query + " img").src = pictureNum + ".png";
+                document.querySelector(query).disabled = true
+
+                lastClickedNum = pictureNum;
+                lastClickedCardQuery = query
+            } else {
+                document.querySelector(query + " img").src = pictureNum + ".png";
+                document.querySelector( query).disabled = true
+                setTimeout(() => {
+                    //animate back
+                    document.querySelector(query + " img").src = "back.png";
+                    document.querySelector(query).disabled = false
+                    document.querySelector(lastClickedCardQuery + " img").src = "back.png";
+                    document.querySelector(lastClickedCardQuery).disabled = false
+
+
+                    lastClickedNum = 0;
+                    lastClickedCardQuery = null;
+                }, 1000)
+            }
+        }
+
+        function replay(){
+            chooseLevel.style.display = "block";
+            board.style.display = "none";
+            board.innerHTML = "";
+            win.style.display = "none";
+            totalRevealed = 0;
+        }
+
+        
+            
+           
+            
+    </script>
+</body>
